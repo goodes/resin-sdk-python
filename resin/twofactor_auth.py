@@ -1,4 +1,4 @@
-import urlparse
+from six.moves import urllib_parse as urlparse
 
 import pyotp
 

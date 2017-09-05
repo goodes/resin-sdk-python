@@ -1,10 +1,10 @@
 import requests
 import json
-import urllib
+import six
 from string import Template
 import os
 
-from urlparse import urljoin
+from six.moves.urllib_parse import urljoin
 
 from .settings import Settings
 from .token import Token
@@ -172,8 +172,7 @@ class BaseRequest(object):
         try:
             json = response.json()
         except ValueError:
-            return response.content
-
+            return response.content.decode(response.encoding)
         return json
 
     def _request_new_token(self):

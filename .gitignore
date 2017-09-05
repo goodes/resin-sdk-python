@@ -1,2 +1,5 @@
 *.pyc
 test.py
+.idea/
+resin_sdk.egg-info/
+

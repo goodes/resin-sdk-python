@@ -33,7 +33,7 @@ class Auth(object):
         Examples:
             >>> from resin import Resin
             >>> resin = Resin()
-            >>> credentials = {'username': '<your email>', 'password': '<your password>''}
+            >>> credentials = {'username': '<your email>', 'password': '<your password>'}
             >>> resin.auth.login(**credentials)
             (Empty Return)
 

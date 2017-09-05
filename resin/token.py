@@ -1,4 +1,5 @@
 import jwt
+import six
 from datetime import datetime
 
 from .settings import Settings

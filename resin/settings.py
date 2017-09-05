@@ -1,10 +1,12 @@
 from __future__ import print_function
 
-import ConfigParser
 import os.path as Path
 import os
 import shutil
 import sys
+import six
+
+from six.moves import configparser as ConfigParser
 
 from . import exceptions
 from .resources import Message
@@ -60,12 +62,16 @@ class Settings(object):
     def __write_settings(self):
         config = ConfigParser.ConfigParser()
         config.add_section(self.CONFIG_SECTION)
+        if six.PY3:
+            flags = "w"
+        else:
+            flags = "wb"
         for key in self._setting:
-            config.set(self.CONFIG_SECTION, key, self._setting[key])
+            config.set(self.CONFIG_SECTION, key, six.text_type(self._setting[key]))
         if not Path.isdir(self._setting['data_directory']):
             os.makedirs(self._setting['data_directory'])
         with open(Path.join(self._setting['data_directory'],
-                            self.CONFIG_FILENAME), 'wb') as config_file:
+                            self.CONFIG_FILENAME), flags) as config_file:
             config.write(config_file)
 
     def __read_settings(self):

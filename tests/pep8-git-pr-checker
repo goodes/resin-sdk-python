@@ -5,15 +5,17 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import six
 
 # 501: line too long
 ignore_codes = ['E501']
+
 
 def system(*args, **kwargs):
     kwargs.setdefault('stdout', subprocess.PIPE)
     proc = subprocess.Popen(args, **kwargs)
     out, err = proc.communicate()
-    return out
+    return six.text_type(out) if out else out
 
 
 def main():
@@ -22,23 +24,23 @@ def main():
     for tmp_file in output.split():
         if tmp_file.endswith('.py'):
             files.append(tmp_file)
-
     tempdir = tempfile.mkdtemp()
     for name in files:
         filename = os.path.join(tempdir, name)
         filepath = os.path.dirname(filename)
         if not os.path.exists(filepath):
             os.makedirs(filepath)
-        with file(filename, 'w') as f:
-            system('git', 'show', ':{0}'.format(name), stdout=f)
-
+        if not os.path.exists(filepath):
+            raise RuntimeError
+        with open(filename, 'w') as f:
+            system('git', 'show', ':{0}'.format(str(name)), stdout=f)
     args = ['pep8']
     args.extend(('--ignore', ','.join(ignore_codes)))
     args.append('.')
-    output = system(*args, cwd=tempdir)
+    pep8_output = system(*args, cwd=tempdir)
     shutil.rmtree(tempdir)
-    if output:
-        print(output)
+    if pep8_output:
+        print(pep8_output)
         sys.exit(1)
 
 
